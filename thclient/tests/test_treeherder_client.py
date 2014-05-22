@@ -54,11 +54,11 @@ class DataSetup(unittest.TestCase):
                     del revision['branch']
 
                 # Add artifacts to data
-                resultset['artifact'] = {
+                resultset['artifacts'] = [{
                     u'name':'push_data',
                     u'type':'push',
                     u'blob': { u'stuff':[1,2,3,4,5] }
-                    }
+                    }]
 
                 resultset['type'] = 'push'
                 resultset['author'] = 'somebody@somewhere.com'
@@ -316,9 +316,9 @@ class TreeherderJobTest(DataSetup, unittest.TestCase):
                 'builds-4h', job['job']['log_references'][0]['url'] )
 
             tj.add_artifact(
-                job['job']['artifact']['name'],
-                job['job']['artifact']['type'],
-                job['job']['artifact']['blob'] )
+                job['job']['artifacts'][0]['name'],
+                job['job']['artifacts'][0]['type'],
+                job['job']['artifacts'][0]['blob'] )
 
             self.compare_structs(tj.data, job)
 

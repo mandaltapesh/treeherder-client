@@ -219,11 +219,13 @@ class TreeherderJob(TreeherderData, ValidatorMixin):
 
     def add_artifact(self, name, artifact_type, blob):
         if blob:
-            self.data['job']['artifact'] = {
-                    'name': name,
-                    'type': artifact_type,
-                    'blob': blob
-                }
+            artifacts = self.data.get('artifacts', [])
+            self.data['job']['artifacts'] = artifacts
+            artifacts.append({
+                'name': name,
+                'type': artifact_type,
+                'blob': blob
+                })
 
     def init_data(self):
 
@@ -315,11 +317,11 @@ class TreeherderJob(TreeherderData, ValidatorMixin):
                 # project_jobs_1.job_artifact.name
                 # project_jobs_1.job_artifact.type
                 # project_jobs_1.job_artifact.blob
-                'artifact': {
+                'artifacts': [{
                     'name': '',
                     'type': '',
                     'blob': ''
-                    }
+                    }]
             },
 
         # List of job_guids that were coallesced to this job
@@ -410,11 +412,11 @@ class TreeherderResultSet(TreeherderData, ValidatorMixin):
             # TODO: add type column to resultset in treeherder-service
             'type': '',
             # TODO: add resultset artifact table in treeherder-service
-            'artifact': {
+            'artifacts': [{
                 'type': '',
                 'name': '',
                 'blob': ''
-                }
+                }]
             }
 
     def add_push_timestamp(self, push_timestamp):
@@ -442,11 +444,13 @@ class TreeherderResultSet(TreeherderData, ValidatorMixin):
 
     def add_artifact(self, name, artifact_type, blob):
         if blob:
-            self.data['artifact'] = {
-                    'name': name,
-                    'type': artifact_type,
-                    'blob': blob
-                }
+            artifacts = self.data.get('artifacts', [])
+            self.data['artifacts'] = artifacts
+            artifacts.append({
+                'name': name,
+                'type': artifact_type,
+                'blob': blob
+            })
 
     def get_revision(self, data={}):
         return TreeherderRevision(data)
