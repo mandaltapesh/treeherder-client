@@ -315,10 +315,13 @@ class TreeherderJobTest(DataSetup, unittest.TestCase):
             tj.add_log_reference(
                 'builds-4h', job['job']['log_references'][0]['url'] )
 
+            # if the blob is empty, TreeherderJob will ignore the insertion
+            job['job']['artifacts'][0]['blob'] = "some value"
+
             tj.add_artifact(
-                job['job']['artifact']['name'],
-                job['job']['artifact']['type'],
-                job['job']['artifact']['blob'] )
+                job['job']['artifacts'][0]['name'],
+                job['job']['artifacts'][0]['type'],
+                job['job']['artifacts'][0]['blob'])
 
             self.compare_structs(tj.data, job)
 
@@ -379,12 +382,12 @@ class TreeherderRequestTest(DataSetup, unittest.TestCase):
             oauth_secret='secret',
             )
 
-        req.send(tjc)
+        req.post(tjc)
 
         self.assertEqual(mock_send.call_count, 1)
         self.assertEqual(
-            tjc.data,
-            mock_send.call_args_list[0][0][0].data
+            tjc.to_json(),
+            mock_send.call_args_list[0][0][2]
             )
 
     @patch.object(TreeherderRequest, 'send')
@@ -405,12 +408,12 @@ class TreeherderRequestTest(DataSetup, unittest.TestCase):
             oauth_secret='secret',
             )
 
-        req.send(trc)
+        req.post(trc)
 
         self.assertEqual(mock_send.call_count, 1)
         self.assertEqual(
-            trc.data,
-            mock_send.call_args_list[0][0][0].data
+            trc.to_json(),
+            mock_send.call_args_list[0][0][2]
             )
 
     @patch.object(TreeherderRequest, 'send')
@@ -431,12 +434,12 @@ class TreeherderRequestTest(DataSetup, unittest.TestCase):
             oauth_secret='secret',
         )
 
-        req.send(tac)
+        req.post(tac)
 
         self.assertEqual(mock_send.call_count, 1)
         self.assertEqual(
-            tac.data,
-            mock_send.call_args_list[0][0][0].data
+            tac.to_json(),
+            mock_send.call_args_list[0][0][2]
         )
 
     @patch("thclient.client.oauth.generate_nonce")
@@ -467,7 +470,7 @@ class TreeherderRequestTest(DataSetup, unittest.TestCase):
 
         tjc.add( tjc.get_job( self.job_data[0] ) )
 
-        response = req.send(tjc)
+        response = req.post(tjc)
 
         self.assertEqual(mock_HTTPConnection.call_count, 1)
         self.assertEqual(mock_HTTPConnection.call_args[0][0], host)
@@ -521,7 +524,7 @@ class TreeherderRequestTest(DataSetup, unittest.TestCase):
             tjc.add( tjc.get_job(job) )
             break
 
-        response = req.send(tjc)
+        response = req.post(tjc)
 
         self.assertEqual(mock_HTTPConnection.call_count, 1)
         self.assertEqual(mock_HTTPConnection.call_args[0][0], host)
