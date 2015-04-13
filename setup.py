@@ -26,7 +26,7 @@ setup(name='treeherder-client',
       license='MPL',
       packages=['thclient'],
       zip_safe=False,
-      install_requires=deps,
+      install_requires=['requests'],
       test_suite='thclient.tests',
       tests_require=["mock"],
       )
